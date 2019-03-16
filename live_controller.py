@@ -66,6 +66,8 @@ class Controller:
             new_cars, num_cars_out = self.step(best_action)
             self.db.add_event(f'event{event_num}', best_action, new_cars)
             event_num += 1
+            print(f'Event{event_num}: Light Config - {best_action}, '
+                  f'New Cars - {new_cars}')
             time.sleep(1)
 
     def start(self):
