@@ -31,6 +31,11 @@ class Db:
 
         # Clear traffic here
 
+        self.db.child('traffic').update({'street_n': [0, 0, 0]})
+        self.db.child('traffic').update({'street_e': [0, 0, 0]})
+        self.db.child('traffic').update({'street_s': [0, 0, 0]})
+        self.db.child('traffic').update({'street_w': [0, 0, 0]})
+
         flattened_traffic = [item for sublist in trafficNESW for item in sublist]
         return flattened_traffic
 
