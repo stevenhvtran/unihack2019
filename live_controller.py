@@ -1,6 +1,7 @@
 from threading import Thread
 import time
 import numpy as np
+import pickle
 
 from db import Db
 from environment import TrafficEnv
@@ -15,6 +16,10 @@ light_dict = {
 }
 
 
+def dd():
+    return np.zeros(6)
+
+
 class Controller:
     def __init__(self, policy, max_cars):
         self.max_cars = max_cars
@@ -22,14 +27,15 @@ class Controller:
         self.db = Db()
         self.env = TrafficEnv()
         self.num_actions = 6
-        self.stop = False
+        self.pause = False
+        self.thread = None
 
     def step(self, next_light_cfg):
 
         # Figure out if any lane has filled up
         for num_cars in self.lane_state:
             if num_cars > self.max_cars:
-                self.stop = True
+                self.pause = True
 
         # Progress simulation
         spawn_list = self.db.get_traffic()
@@ -61,19 +67,35 @@ class Controller:
 
     def do_loop(self):
         event_num = 0
-        while not self.stop:
+        while not self.pause:
             best_action = np.argmax(self.policy[self.state])
             new_cars, num_cars_out = self.step(best_action)
-            self.db.add_event(f'event{event_num}', best_action, new_cars)
+            self.db.add_event(f'event{event_num}', int(best_action), new_cars)
             event_num += 1
             print(f'Event{event_num}: Light Config - {best_action}, '
                   f'New Cars - {new_cars}')
+            print(self.lane_state)
+            print()
             time.sleep(1)
+        print('Terminating...')
 
     def start(self):
         self.env.reset()
-        self.stop = False
-        Thread(target=self.do_loop, args=[self])
+        self.pause = False
+        self.thread = Thread(target=self.do_loop)
+        self.thread.start()
 
     def stop(self):
-        self.stop = True
+        self.pause = True
+        if self.thread:
+            self.thread.stop()
+
+
+def main():
+    policy = pickle.load(open('policy.p', 'rb'))
+    sim = Controller(policy, 10)
+    sim.start()
+
+
+if __name__ == '__main__':
+    main()

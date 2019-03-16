@@ -43,10 +43,11 @@ class TrafficEnv:
 
     def spawn_cars_from_list(self, spawn_list):
         new_cars = []
-        for lane_num, num_new_cars in spawn_list:
-            turn_direction = self.get_direction(lane_num)
-            self.lanes[lane_num].add_car(Car(turn_direction))
-            new_cars.append((lane_num, turn_direction))
+        for lane_num, num_new_cars in enumerate(spawn_list):
+            for _ in range(num_new_cars):
+                turn_direction = self.get_direction(lane_num)
+                self.lanes[lane_num].add_car(Car(turn_direction))
+                new_cars.append((lane_num, turn_direction))
         return new_cars
 
     def spawn_cars_randomly(self):
