@@ -19,24 +19,15 @@ class Db:
         '''
             gets the traffic info as a nested loop from the live demo.
         '''
-        trafficNESW = []
-        trafficNESW.append(
-            self.db.child("traffic").child("street_n").get().val())
-        trafficNESW.append(
-            self.db.child("traffic").child("street_e").get().val())
-        trafficNESW.append(
-            self.db.child("traffic").child("street_s").get().val())
-        trafficNESW.append(
-            self.db.child("traffic").child("street_w").get().val())
+        query = dict(self.db.child("traffic").get().val())
+        streets = ['street_n', 'street_e', 'street_s', 'street_w']
+        traffic_list = [query[street] for street in streets]
+        self.db.child('traffic').update({'street_n': [0, 0, 0],
+                                        'street_e': [0, 0, 0],
+                                        'street_s': [0, 0, 0],
+                                        'street_w': [0, 0, 0]})
 
-        # Clear traffic here
-
-        self.db.child('traffic').update({'street_n': [0, 0, 0]})
-        self.db.child('traffic').update({'street_e': [0, 0, 0]})
-        self.db.child('traffic').update({'street_s': [0, 0, 0]})
-        self.db.child('traffic').update({'street_w': [0, 0, 0]})
-
-        flattened_traffic = [item for sublist in trafficNESW for item in sublist]
+        flattened_traffic = [item for sublist in traffic_list for item in sublist]
         return flattened_traffic
 
     def remove_traffic(self, street, ):
@@ -49,8 +40,6 @@ class Db:
         '''
         self.db.child("traffic").child("live").child(eventNo).update({"lightConfig": lights})
         self.db.child("traffic").child("live").child(eventNo).update({"carsInfo": cars})
-
-
 
 
 db = Db()
