@@ -3,9 +3,8 @@ import pyrebase
 
 class Db:
     def __init__(self):
-        '''
-            initialises the database, and links db to firebase.
-        '''
+        """ Initialises the database, and links db to firebase. """
+
         config = {
             "apiKey": "AIzaSyBwE0IwlvsrnzQ6mcFmq-F_opuWiA_YfhI",
             "authDomain": "unihack19-6452a.firebaseapp.com",
@@ -16,9 +15,9 @@ class Db:
         self.db = pyrebase.initialize_app(config).database()
 
     def get_traffic(self):
-        '''
-            gets the traffic info as a nested loop from the live demo.
-        '''
+        """
+        :return: Flattened list of live traffic information in Firebase
+        """
         query = dict(self.db.child("traffic").get().val())
         streets = ['street_n', 'street_e', 'street_s', 'street_w']
         traffic_list = [query[street] for street in streets]
