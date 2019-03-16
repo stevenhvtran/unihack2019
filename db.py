@@ -29,6 +29,13 @@ class Db:
         traffic_list.append(
             self.db.child("traffic").child("street_w").get().val())
 
+        # Clear traffic here
+
+        self.db.child('traffic').update({'street_n': [0, 0, 0]})
+        self.db.child('traffic').update({'street_e': [0, 0, 0]})
+        self.db.child('traffic').update({'street_s': [0, 0, 0]})
+        self.db.child('traffic').update({'street_w': [0, 0, 0]})
+
         flat_traffic = [item for sublist in traffic_list for item in sublist]
         return flat_traffic
 
