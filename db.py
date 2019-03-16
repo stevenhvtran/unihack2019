@@ -40,6 +40,10 @@ class Db:
         self.db.child("traffic").child("live").child(eventNo).update({"lightConfig": lights})
         self.db.child("traffic").child("live").child(eventNo).update({"carsInfo": cars})
 
+    def reset_events(self):
+        self.db.child("traffic").update({"live": "reset"})
+
 
 db = Db()
 print(db.get_traffic())
+db.reset_events()
