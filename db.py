@@ -1,5 +1,6 @@
 import pyrebase
 
+
 class Db:
     def __init__(self):
         '''
@@ -27,7 +28,11 @@ class Db:
             self.db.child("traffic").child("street_s").get().val())
         trafficNESW.append(
             self.db.child("traffic").child("street_w").get().val())
-        return trafficNESW
+
+        # Clear traffic here
+
+        flattened_traffic = [item for sublist in trafficNESW for item in sublist]
+        return flattened_traffic
 
     def remove_traffic(self, street, ):
         self.db.child("traffic").child("")
@@ -44,4 +49,4 @@ class Db:
 
 
 db = Db()
-print(db.add_event("event1", 2, [[0, 0, 1], [1, 2, 2], [1, 0, 0], [3, 0, 1]]))
+print(db.get_traffic())

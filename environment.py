@@ -30,13 +30,26 @@ class TrafficEnv:
         self.lanes = [Lane() for _ in range(12)]
         self.light_cfg = 0
 
-    def step(self, next_light_cfg):
+    def step(self, next_light_cfg, spawn_list=None):
         num_cars_out = self.release_cars(next_light_cfg)
-        new_cars = self.spawn_cars()
+        if spawn_list:
+            # Spawn cars according to some list
+            new_cars = self.spawn_cars_from_list(spawn_list)
+        else:
+            # Spawn cars randomly
+            new_cars = self.spawn_cars_randomly()
         self.light_cfg = next_light_cfg
         return new_cars, num_cars_out
 
-    def spawn_cars(self):
+    def spawn_cars_from_list(self, spawn_list):
+        new_cars = []
+        for lane_num, num_new_cars in spawn_list:
+            turn_direction = self.get_direction(lane_num)
+            self.lanes[lane_num].add_car(Car(turn_direction))
+            new_cars.append((lane_num, turn_direction))
+        return new_cars
+
+    def spawn_cars_randomly(self):
         new_cars = []
         for road_num in range(4):
             spawn_prob = self.car_density[road_num]
