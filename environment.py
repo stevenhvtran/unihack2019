@@ -71,14 +71,14 @@ class TrafficEnv:
 
     def get_direction(self, lane_num):
         # Left turning lane
-        if lane_num % 3:
+        if lane_num % 3 == 0:
             if np.random.random() < 0.5:
                 turn_direction = 0
             else:
                 turn_direction = 1
 
         # Handle middle lanes
-        elif (lane_num + 1) % 3:
+        elif (lane_num - 1) % 3 == 0:
             turn_direction = 1
 
         # Handle right lanes

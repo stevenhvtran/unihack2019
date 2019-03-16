@@ -41,7 +41,15 @@ class Controller:
         spawn_list = self.db.get_traffic()
         new_cars, num_cars_out = self.env.step(next_light_cfg,
                                                spawn_list=spawn_list)
-        return new_cars, num_cars_out
+
+        new_cars_formatted = []
+        for lane_num, turn_direction in new_cars:
+            if (lane_num - 1) % 3 == 0:
+                turn_direction += 1
+            elif (lane_num - 2) % 3 == 0:
+                turn_direction += 1
+            new_cars_formatted.append([lane_num // 3, turn_direction])
+        return new_cars_formatted, num_cars_out
 
     @property
     def lane_state(self):
