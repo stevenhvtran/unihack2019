@@ -41,15 +41,7 @@ class Controller:
         spawn_list = self.db.get_traffic()
         new_cars, num_cars_out = self.env.step(next_light_cfg,
                                                spawn_list=spawn_list)
-
-        new_cars_formatted = []
-        for lane_num, turn_direction in new_cars:
-            if (lane_num - 1) % 3 == 0:
-                turn_direction += 1
-            elif (lane_num - 2) % 3 == 0:
-                turn_direction += 1
-            new_cars_formatted.append([lane_num // 3, turn_direction])
-        return new_cars_formatted, num_cars_out
+        return new_cars, num_cars_out
 
     @property
     def lane_state(self):
@@ -78,7 +70,7 @@ class Controller:
         while not self.pause:
             best_action = np.argmax(self.policy[self.state])
             new_cars, num_cars_out = self.step(best_action)
-            self.db.add_event(f'event{event_num}', int(best_action), new_cars)
+            self.db.add_event(int(best_action), new_cars)
             event_num += 1
             print(f'Event{event_num}: Light Config - {best_action}, '
                   f'New Cars - {new_cars}')
@@ -88,6 +80,7 @@ class Controller:
         print('Terminating...')
 
     def start(self):
+        self.db.reset_events()
         self.env.reset()
         self.pause = False
         self.thread = Thread(target=self.do_loop)

@@ -24,7 +24,7 @@ class TrafficEnv:
 
         # By default spawn a new car 30% of the time
         # ordered by Roads, N, E, S, W
-        self.car_density = [0.5 for _ in range(4)]
+        self.car_density = [0.1, 0.7, 0.1, 0.1]
 
     def reset(self):
         self.lanes = [Lane() for _ in range(12)]
